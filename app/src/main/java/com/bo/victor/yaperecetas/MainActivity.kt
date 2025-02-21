@@ -51,19 +51,21 @@ class MainActivity : ComponentActivity() {
                     val recipe = recipes.find { it.id == recipeId}
 
                     if (recipe != null) {
-                        DetailScreen(recipe = recipe) {
-                            navController.navigate("map/${recipe.id}")
+                        DetailScreen(recipe = recipe) { id ->
+                            navController.navigate("map/$id")
                         }
                     }
                 }
                 composable("map/{recipeId}") { backStackEntry ->
                     val recipeId = backStackEntry.arguments?.getString("recipeId")?.toIntOrNull()
-                    val recipe = recipes.find { it.id == recipeId}
+                    val recipe = recipes.find { it.id == recipeId }
 
                     if (recipe != null) {
                         MapScreen(origin = recipe.origin) {
                             navController.popBackStack()
                         }
+                    } else {
+                        Text("No se encontró la ubicación de la receta")
                     }
                 }
             }

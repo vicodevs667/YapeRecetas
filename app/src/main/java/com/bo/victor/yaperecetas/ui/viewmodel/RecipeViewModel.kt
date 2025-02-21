@@ -28,6 +28,7 @@ class RecipeViewModel @Inject constructor(
     fun fetchRecipes() {
         viewModelScope.launch {
             val data = repository.getRecipes()
+            println("Recetas obtenidas en UI: ${data.size}")
             _recipes.value = data
         }
     }

@@ -24,7 +24,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://demo1161806.mockable.io/")
+            .baseUrl("https://recipesmock.free.beeceptor.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

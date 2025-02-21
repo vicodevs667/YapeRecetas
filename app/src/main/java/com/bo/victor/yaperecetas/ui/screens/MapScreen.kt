@@ -6,6 +6,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import com.bo.victor.yaperecetas.model.Origin
 import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,10 +19,15 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
@@ -35,13 +45,17 @@ import com.google.maps.android.compose.*
 fun MapScreen(origin: Origin, onBack: () -> Unit) {
     val context = LocalContext.current
 
-    //Configuración del manejo de permisos de ubicación
-    LaunchedEffect(Unit) {
-        ActivityCompat.requestPermissions(
-            (context as androidx.activity.ComponentActivity),
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            1
-        )
+    //Verificación de permisos
+    var locationPermissionGranted = remember { mutableStateOf(false) }
+    RequestLocationPermission(context = context) {
+        locationPermissionGranted.value = true
+    }
+
+    if (origin == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Ubicación no disponible", style = MaterialTheme.typography.headlineMedium)
+        }
+        return
     }
 
     val recipeLocation = LatLng(origin.lat, origin.lon)
@@ -68,13 +82,35 @@ fun MapScreen(origin: Origin, onBack: () -> Unit) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
-                properties = MapProperties(isMyLocationEnabled = true)
+                properties = MapProperties(isMyLocationEnabled = locationPermissionGranted.value)
             ) {
                 Marker(
                     state = MarkerState(position = recipeLocation),
                     title = "Coordenadas de la Receta"
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun RequestLocationPermission(context: Context, onPermissionGranted: () -> Unit) {
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            onPermissionGranted()
+        } else {
+            Toast.makeText(context, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            onPermissionGranted()
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.bo.victor.yaperecetas.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -30,7 +32,7 @@ import com.bo.victor.yaperecetas.model.Recipe
  * All rights reserved 2025
  ****/
 @Composable
-fun DetailScreen(recipe: Recipe, onNavigateToMap: () -> Unit) {
+fun DetailScreen(recipe: Recipe, onNavigateToMap: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +81,7 @@ fun DetailScreen(recipe: Recipe, onNavigateToMap: () -> Unit) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { onNavigateToMap() },
+                onClick = { onNavigateToMap(recipe.id) },
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
