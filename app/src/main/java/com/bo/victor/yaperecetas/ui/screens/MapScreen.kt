@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,8 +29,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
+import com.bo.victor.yaperecetas.R
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 
@@ -43,7 +47,9 @@ import com.google.maps.android.compose.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapScreen(origin: Origin, onBack: () -> Unit) {
+
     val context = LocalContext.current
+    val customMarkerBitmap = remember { mutableStateOf<BitmapDescriptor?>(null) }
 
     //Verificación de permisos
     var locationPermissionGranted = remember { mutableStateOf(false) }
@@ -60,7 +66,11 @@ fun MapScreen(origin: Origin, onBack: () -> Unit) {
 
     val recipeLocation = LatLng(origin.lat, origin.lon)
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(recipeLocation, 12f)
+        position = CameraPosition.fromLatLngZoom(recipeLocation, 14f)
+    }
+
+    LaunchedEffect(context) {
+        customMarkerBitmap.value = BitmapDescriptorFactory.fromResource(R.drawable.marker)
     }
 
     Scaffold(
@@ -70,7 +80,7 @@ fun MapScreen(origin: Origin, onBack: () -> Unit) {
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = androidx.compose.material.icons.Icons.Filled.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Regresar"
                         )
                     }
@@ -78,7 +88,9 @@ fun MapScreen(origin: Origin, onBack: () -> Unit) {
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState,
@@ -86,7 +98,8 @@ fun MapScreen(origin: Origin, onBack: () -> Unit) {
             ) {
                 Marker(
                     state = MarkerState(position = recipeLocation),
-                    title = "Coordenadas de la Receta"
+                    title = "Coordenadas de la Receta",
+                    icon = customMarkerBitmap.value
                 )
             }
         }

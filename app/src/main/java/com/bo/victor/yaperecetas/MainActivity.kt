@@ -32,60 +32,47 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            val viewModel: RecipeViewModel = hiltViewModel()
-            val recipes by viewModel.recipes.collectAsStateWithLifecycle()
+            YapeRecetasTheme {
+                val navController = rememberNavController()
+                val viewModel: RecipeViewModel = hiltViewModel()
+                val recipes by viewModel.recipes.collectAsStateWithLifecycle()
 
-            LaunchedEffect(Unit) {
-                viewModel.fetchRecipes()
-            }
-
-            NavHost(navController, startDestination = "home") {
-                composable("home") {
-                   RecipeListScreen(recipes = recipes) { selectedRecipe ->
-                       navController.navigate("detail/${selectedRecipe.id}")
-                   }
+                LaunchedEffect(Unit) {
+                    viewModel.fetchRecipes()
                 }
-                composable("detail/{recipeId}") { backStackEntry ->
-                    val recipeId = backStackEntry.arguments?.getString("recipeId")?.toIntOrNull()
-                    val recipe = recipes.find { it.id == recipeId}
 
-                    if (recipe != null) {
-                        DetailScreen(recipe = recipe) { id ->
-                            navController.navigate("map/$id")
+                NavHost(navController, startDestination = "home") {
+                    composable("home") {
+                        RecipeListScreen(recipes = recipes) { selectedRecipe ->
+                            navController.navigate("detail/${selectedRecipe.id}")
+                        }
+                    }
+                    composable("detail/{recipeId}") { backStackEntry ->
+                        val recipeId = backStackEntry.arguments?.getString("recipeId")?.toIntOrNull()
+                        val recipe = recipes.find { it.id == recipeId}
+
+                        if (recipe != null) {
+                            DetailScreen(
+                                recipe = recipe,
+                                onBack = { navController.popBackStack() },
+                                onNavigateToMap = { id -> navController.navigate("map/$id") }
+                            )
+                        }
+                    }
+                    composable("map/{recipeId}") { backStackEntry ->
+                        val recipeId = backStackEntry.arguments?.getString("recipeId")?.toIntOrNull()
+                        val recipe = recipes.find { it.id == recipeId }
+
+                        if (recipe != null) {
+                            MapScreen(origin = recipe.origin) {
+                                navController.popBackStack()
+                            }
+                        } else {
+                            Text("No se encontró la ubicación de la receta")
                         }
                     }
                 }
-                composable("map/{recipeId}") { backStackEntry ->
-                    val recipeId = backStackEntry.arguments?.getString("recipeId")?.toIntOrNull()
-                    val recipe = recipes.find { it.id == recipeId }
-
-                    if (recipe != null) {
-                        MapScreen(origin = recipe.origin) {
-                            navController.popBackStack()
-                        }
-                    } else {
-                        Text("No se encontró la ubicación de la receta")
-                    }
-                }
             }
-
-            /*YapeRecetasTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }*/
         }
     }
 }
-
-/*@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}*/

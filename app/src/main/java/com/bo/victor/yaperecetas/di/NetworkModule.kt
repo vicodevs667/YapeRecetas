@@ -24,7 +24,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://recipesmock.free.beeceptor.com/")
+            .baseUrl("https://api.mockfly.dev/mocks/a59e8aff-c061-497c-83c7-53c541ce8592/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
