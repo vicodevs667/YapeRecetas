@@ -27,7 +27,8 @@ class RecipeViewModel @Inject constructor(
 
     fun fetchRecipes() {
         viewModelScope.launch {
-            _recipes.value = repository.getRecipes()
+            val data = repository.getRecipes()
+            _recipes.value = data
         }
     }
 }

@@ -11,12 +11,14 @@ import javax.inject.Inject
  * More info: www.victorsanjines.com.bo
  * All rights reserved 2025
  ****/
-class RecipeRepository @Inject constructor(
-    private val apiService: ApiService) {
+open class RecipeRepository @Inject constructor(
+    private val apiService: ApiService
+) {
     suspend fun getRecipes(): List<Recipe> {
         return try {
             apiService.getRecipes()
         } catch (e: Exception) {
+            println("Error en getRecipes(): ${e.message}")
             emptyList()
         }
     }
