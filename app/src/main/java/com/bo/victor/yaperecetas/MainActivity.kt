@@ -16,6 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.bo.victor.yaperecetas.ui.screens.DetailScreen
+import com.bo.victor.yaperecetas.ui.screens.MapScreen
 import com.bo.victor.yaperecetas.ui.screens.RecipeListScreen
 import com.bo.victor.yaperecetas.ui.theme.YapeRecetasTheme
 import com.bo.victor.yaperecetas.ui.viewmodel.RecipeViewModel
@@ -27,6 +32,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             val viewModel: RecipeViewModel = hiltViewModel()
             val recipes by viewModel.recipes.collectAsStateWithLifecycle()
 
@@ -34,34 +40,50 @@ class MainActivity : ComponentActivity() {
                 viewModel.fetchRecipes()
             }
 
-            RecipeListScreen(recipes) { selectedRecipe ->
-                println("Receta seleccionada: ${selectedRecipe.name}")
+            NavHost(navController, startDestination = "home") {
+                composable("home") {
+                   RecipeListScreen(recipes = recipes) { selectedRecipe ->
+                       navController.navigate("detail/${selectedRecipe.id}")
+                   }
+                }
+                composable("detail/{recipeId}") { backStackEntry ->
+                    val recipeId = backStackEntry.arguments?.getString("recipeId")?.toIntOrNull()
+                    val recipe = recipes.find { it.id == recipeId}
+
+                    if (recipe != null) {
+                        DetailScreen(recipe = recipe) {
+                            navController.navigate("map/${recipe.id}")
+                        }
+                    }
+                }
+                composable("map/{recipeId}") { backStackEntry ->
+                    val recipeId = backStackEntry.arguments?.getString("recipeId")?.toIntOrNull()
+                    val recipe = recipes.find { it.id == recipeId}
+
+                    if (recipe != null) {
+                        MapScreen(origin = recipe.origin) {
+                            navController.popBackStack()
+                        }
+                    }
+                }
             }
 
-            YapeRecetasTheme {
+            /*YapeRecetasTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
-            }
+            }*/
         }
     }
 }
 
-@Composable
+/*@Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
         modifier = modifier
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    YapeRecetasTheme {
-        Greeting("Android")
-    }
-}
+}*/

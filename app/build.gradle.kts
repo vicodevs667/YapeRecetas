@@ -96,6 +96,7 @@ dependencies {
 
     // Google Maps SDK
     implementation(libs.google.maps)
+    implementation(libs.maps.compose)
 
     // Pruebas Unitarias
     testImplementation(libs.junit)
