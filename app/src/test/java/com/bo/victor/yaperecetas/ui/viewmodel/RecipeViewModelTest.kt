@@ -8,6 +8,7 @@ import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -18,9 +19,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
 
 /****
  * Project: YapeRecetas
@@ -35,19 +38,24 @@ class RecipeViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
+    @Mock
     private lateinit var repository: RecipeRepository
+
     private lateinit var viewModel: RecipeViewModel
+    private lateinit var closeable: AutoCloseable
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         repository = mock(RecipeRepository::class.java)
         viewModel = RecipeViewModel(repository)
+        closeable = MockitoAnnotations.openMocks(this)
     }
 
     @After
     fun tearDown() {
         Dispatchers.resetMain() // Restablecer el dispatcher después de cada test
+        closeable.close()
     }
 
 
@@ -67,5 +75,6 @@ class RecipeViewModelTest {
         advanceUntilIdle() // Esperar ejecución de coroutines
 
         assertEquals(1, viewModel.recipes.first().size)
+        assertEquals("Pizza", viewModel.recipes.value[0].name)
     }
 }

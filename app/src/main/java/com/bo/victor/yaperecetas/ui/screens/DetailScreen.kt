@@ -24,14 +24,19 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.bo.victor.yaperecetas.R
 import com.bo.victor.yaperecetas.model.Origin
 import com.bo.victor.yaperecetas.model.Recipe
+import com.bo.victor.yaperecetas.ui.components.RecipeImage
 
 /****
  * Project: YapeRecetas
@@ -59,24 +64,17 @@ fun DetailScreen(recipe: Recipe, onBack: () -> Unit, onNavigateToMap: (Int) -> U
     ) { paddingValues ->
         println("Padding top aplicado: ${paddingValues.calculateTopPadding()}")
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
-                top = min(16.dp, paddingValues.calculateTopPadding()),
+                //top = min(86.dp, paddingValues.calculateTopPadding()),
+                top =paddingValues.calculateTopPadding(),
                 start = 16.dp,
                 end = 16.dp
             ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Image(
-                    painter = rememberAsyncImagePainter(recipe.image),
-                    contentDescription = "Imagen de la receta ${recipe.name}",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                    contentScale = ContentScale.Crop
-                )
+                RecipeImage(imageUrl = recipe.image, contentDescription = "Imagen de la receta ${recipe.name}")
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -120,62 +118,6 @@ fun DetailScreen(recipe: Recipe, onBack: () -> Unit, onNavigateToMap: (Int) -> U
         }
 
     }
-    /*LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item {
-            Image(
-                painter = rememberAsyncImagePainter(recipe.image),
-                contentDescription = "Imagen de la receta ${recipe.name}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = recipe.name,
-                style = MaterialTheme.typography.headlineMedium
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = recipe.description,
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Ingredientes",
-                style = MaterialTheme.typography.headlineSmall
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        items(recipe.ingredients.size) { index ->
-            IngredientItem(recipe.ingredients[index])
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { onNavigateToMap(recipe.id) },
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = "Ver en el mapa")
-            }
-        }
-    }*/
 }
 
 @Composable

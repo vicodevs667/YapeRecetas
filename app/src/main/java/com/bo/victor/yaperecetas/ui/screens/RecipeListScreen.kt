@@ -3,6 +3,7 @@ package com.bo.victor.yaperecetas.ui.screens
 import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -44,6 +47,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.bo.victor.yaperecetas.R
 import com.bo.victor.yaperecetas.model.Origin
 import com.bo.victor.yaperecetas.model.Recipe
+import com.bo.victor.yaperecetas.ui.components.RecipeImage
 
 /****
  * Project: YapeRecetas
@@ -117,17 +121,10 @@ fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            AsyncImage(
-                model = recipe.image.ifEmpty { "https://yaperecetas.placeholder.com/default.png" },
-                contentDescription = "Imagen de la receta ${recipe.name}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .clip(RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)),
-                contentScale = ContentScale.Fit,
-                error = painterResource(R.drawable.placeholder_image) //Imagen local si la URL es inválida
-            )
+            RecipeImage(imageUrl = recipe.image, contentDescription = "Imagen de la receta ${recipe.name}")
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Text(
                 text = recipe.name,
                 style = MaterialTheme.typography.headlineSmall

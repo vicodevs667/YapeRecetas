@@ -4,7 +4,9 @@ import com.bo.victor.yaperecetas.data.remote.ApiService
 import com.bo.victor.yaperecetas.model.Origin
 import com.bo.victor.yaperecetas.model.Recipe
 import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -29,7 +31,7 @@ class RecipeRepositoryTest {
     }
 
     @Test
-    fun `getRecipes returns list of recipes`() = runBlocking {
+    fun `getRecipes returns list of recipes`() = runTest {
         //Simulamos una respuesta de la API
         val mockRecipes = listOf(
             Recipe(1, "Pizza", "https://png.pngtree.com/element_our/20240724/30e6ab59f056317a22d88afb8baa8a7d.png", "Deliciosa pizza casera", listOf("Harina", "Tomate"), Origin(40.0, -3.0)),

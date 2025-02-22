@@ -8,6 +8,7 @@ import com.bo.victor.yaperecetas.model.Origin
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.core.content.ContextCompat
 import com.bo.victor.yaperecetas.R
 import com.google.android.gms.maps.model.CameraPosition
@@ -70,7 +72,13 @@ fun MapScreen(origin: Origin, onBack: () -> Unit) {
     }
 
     LaunchedEffect(context) {
-        customMarkerBitmap.value = BitmapDescriptorFactory.fromResource(R.drawable.marker)
+        try {
+            if (BitmapDescriptorFactory.defaultMarker() != null) {
+                customMarkerBitmap.value = BitmapDescriptorFactory.fromResource(R.drawable.marker)
+            }
+        } catch (e: Exception) {
+            Log.e("MapScreen", "Error inicializando marcador: ${e.message}")
+        }
     }
 
     Scaffold(
@@ -92,7 +100,7 @@ fun MapScreen(origin: Origin, onBack: () -> Unit) {
             .fillMaxSize()
             .padding(paddingValues)) {
             GoogleMap(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().testTag("MapView"),
                 cameraPositionState = cameraPositionState,
                 properties = MapProperties(isMyLocationEnabled = locationPermissionGranted.value)
             ) {
