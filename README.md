@@ -61,11 +61,11 @@ Elegimos el patrón **MVVM** porque ofrece varias ventajas clave en el desarroll
 - Se implementó un repositorio (`RecipeRepository`) para desacoplar el acceso a datos y facilitar las pruebas.
 
 ### **3️⃣ Dagger Hilt para Inyección de Dependencias**
-- Nos permite gestionar instancias de clases sin necesidad de crearlas manualmente, facilitando la escalabilidad y testabilidad del código.
-- Se usa **Dagger Hilt** para inyectar `RecipeRepository` y otros componentes sin crear instancias manualmente.
-- Nos evita tener que instanciar manualmente clases como `RecipeRepository`, `ApiService`.
-- Reduce la cantidad de código "boilerplate" y facilita la modularización.
-- Nos permite haber integrado dependencias en el `ViewModel` integrándose perfectamente con **Jetpack Compose**.
+- Nos permitió gestionar instancias de clases sin necesidad de crearlas manualmente, facilitando la escalabilidad y testabilidad del código.
+- Se usó **Dagger Hilt** para inyectar `RecipeRepository` y otros componentes sin crear instancias manualmente.
+- Nos evitó tener que instanciar manualmente clases como `RecipeRepository`, `ApiService`.
+- Redujo la cantidad de código "boilerplate" y facilitó la modularización incluso para su uso con los Tests.
+- Nos permitió haber integrado dependencias en el `ViewModel` integrándose perfectamente con **Jetpack Compose**.
 
 ### **4️⃣ Google Maps en `MapScreen`**
 - Se implementó `GoogleMap` para mostrar la ubicación de origen de cada receta.
