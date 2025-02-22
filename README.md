@@ -20,3 +20,29 @@ y mantenimiento del código.
 
 ---
 
+## **📌 Arquitectura del Proyecto**
+El proyecto sigue el patrón **MVVM (Model-View-ViewModel)** con un **Repository Pattern** para gestionar los datos de manera desacoplada.
+### ¿Por qué Elegimos MVVM?
+
+Elegimos el patrón **MVVM** porque ofrece varias ventajas clave en el desarrollo de aplicaciones Android modernas:
+
+✅ **Facilita la separación de responsabilidades**
+- La **View** solo maneja la UI y delega la lógica de negocio al **ViewModel**.
+- El **ViewModel** se encarga de la lógica de UI y obtiene datos desde el **Repository**.
+- El **Repository** maneja el acceso a la API o base de datos.
+- Asimismo el uso de **Dagger Hilt** permite la inyección de dependencias para desacoplar las clases.
+
+✅ **Permite realizar pruebas unitarias sin depender de la UI**
+- Al separar la lógica de UI en el ViewModel, podemos probarla de forma independiente con **JUnit**.
+- El **Repository** puede ser simulado (`FakeRepository`) para pruebas sin acceder a la API real.
+
+✅ **Hace que la UI sea reactiva y más eficiente**
+- Usamos **StateFlow** en lugar de LiveData para un mejor rendimiento en **Jetpack Compose**.
+- Cuando los datos cambian, la UI se actualiza automáticamente sin necesidad de gestionarla manualmente.
+
+✅ **Escalabilidad: fácil de extender y modificar**
+- Si en el futuro queremos cambiar la fuente de datos de otra API o base de datos local,  
+  solo modificamos el **Repository**, sin afectar la UI ni el ViewModel.
+
+✅ **Compatible con las recomendaciones de Google**
+- **MVVM** es el patrón recomendado por Google para aplicaciones Android modernas con Jetpack.
